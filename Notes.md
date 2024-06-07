@@ -85,7 +85,7 @@ used to automate tasks
         - Trigger builds remotely (e.g., from scripts): run the job through an HTTP call
         - Build after other projects are built: run the job after another job is executed
         - Build periodically: schedule the job to run at regular intervals using a cron
-        - GitHub hook trigger for GITScm polling 🟢: run the job when Git notifies Genkins about a change in the repository
+        - GitHub hook trigger for GITScm polling 🟢: run the job when Git notifies Genkins about a change in the repository. Also is necessary that you configure webhooks in your repository, in PayloadURL "http://your-jenkins-url/github-webhook/" ![](JenkinsDocu/github-webhooks.png)
         - Poll SCM: Jenkins will check the SCM for changes at regular intervals and run the job if there are changes
     - Build Environment: configure the environment where the job will be executed ![](JenkinsDocu/config-job/3-build-trigger-and-build-environment.png)
         - Delete workspace before build starts: clear the workspace before starting the build 
