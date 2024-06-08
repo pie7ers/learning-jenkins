@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  jenkins:
+    image: jenkins/jenkins:lts-jdk17
+    container_name: jenkins
+    restart: always
+    ports:
+      # jenkins default port
+      - "8080:8080"
+      # this port is used to connect Jenkins agents, specially used on master.slave mode to distribute the work charge
+      - "50000:50000"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+    #environment:
+      # variable use for JVM options and in this case the value disable the Jenkins initial configuration wizard
+      #- JAVA_OPTS=-Djenkins.install.runSetupWizard=false
+
+volumes:
+  jenkins_home:
+
+#Running
+#docker pull jenkins/jenkins:lts-jdk17
+#docker-compose up -d
