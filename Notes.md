@@ -1,5 +1,17 @@
 # JENKINS
 
+## INDEX
+
+1. [INTRODUCTION](#INTRODUCTION)
+2. [INSTALLATION WITH DOCKER](#INSTALLATION-WITH-DOCKER)
+3. [ADMINISTRATION](#ADMINISTRATION)
+4. [Manage Jenkins](#Manage-Jenkins)
+    - [Options](#Options)
+3. [JOBS](#JOBS)
+    - [EXAMPLE FOR A GIT HUB NODEJS REPOSITY ](#EXAMPLE-FOR-A-GIT-HUB-NODEJS-REPOSITY)
+3. [SOME TROUBLES SOLVED](#SOME-TROUBLES-SOLVED)
+
+## INTRODUCTION
 Open source software and on-premise, its wrote on Java, used to automate and deploy software porjectes on a continuos basis but also you can automate software to execute specific task, for instance you could automate a software to send messages to someone.
 
 - Other Jenkins' characteristics is that is extensible then you can make plugins even use plugins made by third person
@@ -28,6 +40,32 @@ Open source software and on-premise, its wrote on Java, used to automate and dep
     #password: admin
     #full name: administrator
     #email:
+    #access through http://localhost:5002/
+    #Also you can use a docker-compose
+    ```yml
+    version: '3'
+
+    services:
+    jenkins:
+        image: jenkins/jenkins:lts-jdk17
+        container_name: jenkins
+        restart: always
+        ports:
+        # jenkins default port
+        - "8080:8080"
+        # this port is used to connect Jenkins agents, specially used on master.slave mode to distribute the work charge
+        - "50000:50000"
+        volumes:
+        - jenkins_home:/var/jenkins_home
+
+    volumes:
+    jenkins_home:
+
+    #Running
+    #docker pull jenkins/jenkins:lts-jdk17
+    #docker-compose up -d
+    #docker run -it --name jenkins_jenkins_home --rm -v jenkins_jenkins_home:/ruta/dentro/contenedor alpine sh
+    ```
 
 ## ADMINISTRATION
 
@@ -75,7 +113,7 @@ used to automate tasks
 
     once the job has been created since configuration you have many options among which are:
 
-    ### OB EXAMPLE FOR A GIT HUB NODEJS REPOSITY 
+    ### EXAMPLE FOR A GIT HUB NODEJS REPOSITY 
 
     NOTE: the options may vary according to the installed plugins
 
@@ -113,3 +151,10 @@ used to automate tasks
         - Deploy artifacts to servers:
 
 
+## SOME TROUBLES SOLVED
+
+for node projects in case that you have many registries and the job generates errors check the package-log.json and verify if the registry that produces the error is mention and remove all its references if you don't need it
+
+## EXPOSE PORTS FOR LOCAL TESTS
+npm install -g localtunnel
+lt --port 8080
