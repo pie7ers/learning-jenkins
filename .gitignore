@@ -2,7 +2,7 @@
 node_modules
 
 # Ignorar .env files
-.env*
+.env
 
 # Ignorar log files
 Log
@@ -28,7 +28,6 @@ MochaTestsReporter
 K6/Reports/*
 
 # Vscode generated
-/.vscode/
 /.idea/
 
 volumes

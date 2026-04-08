@@ -1,0 +1,29 @@
+{
+  "mcpServers": {
+    "github-mcp-server": {
+      "$typeName": "exa.cascade_plugins_pb.CascadePluginCommandTemplate",
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e",
+        "GITHUB_PERSONAL_ACCESS_TOKEN",
+        "ghcr.io/github/github-mcp-server"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": ""
+      }
+    },
+    "atlassian-mcp-server": {
+      "$typeName": "exa.cascade_plugins_pb.CascadePluginCommandTemplate",
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://mcp.atlassian.com/v1/mcp"
+      ],
+      "env": {}
+    }
+  }
+}

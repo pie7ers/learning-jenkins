@@ -1,0 +1,15 @@
+# Block dangerous scripts
+ignore-dep-scripts=true
+
+# Model zero-trust whitelist
+only-built-dependencies[]=esbuild
+only-built-dependencies[]=sharp
+
+# avoid newly released packages [minutes]
+minimum-release-age=1440
+
+# Trust policy mitigate supply chain attacks, if its trust level is lower than of previously
+turst-policy=no-downgrade
+
+# Consistency force developers to use the same versions of node and pnpm
+egine-strict=true

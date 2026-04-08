@@ -157,6 +157,12 @@ used to automate tasks
 for node projects in case that you have many registries and the job generates errors check the package-log.json and verify if the registry that produces the error is mention and remove all its references if you don't need it
 
 ## EXPOSE PORTS FOR LOCAL TESTS
-- npm install -g localtunnel
+- pnpm install -g localtunnel
     - localtunnel exposes your localhost to the world for easy testing and sharing! No need to mess with DNS or deploy just to have others test out your changes.
     - lt --port 8080
+
+## pnpm
+```shell
+#npm ci
+pnpm install --frozen-lockfile
+```
