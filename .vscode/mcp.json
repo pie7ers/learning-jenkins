@@ -1,0 +1,31 @@
+{
+	"servers": {
+		"github": {
+			"command": "docker",
+			"args": [
+				"run",
+				"-i",
+				"--rm",
+				"-e",
+				"GITHUB_PERSONAL_ACCESS_TOKEN",
+				"ghcr.io/github/github-mcp-server"
+			],
+			"envFile": "${workspaceFolder}/.env",
+			"type": "stdio"
+		},
+		"playwright": {
+			"command": "npx",
+			"args": [
+				"@playwright/mcp@latest"
+			],
+			"type": "stdio"
+		},
+		"atlassian-rovo-mcp": {
+			"url": "https://mcp.atlassian.com/v1/mcp",
+			"headers": {
+				"Authorization": "Bearer ${env:ATLASSIAN_API_TOKEN}"
+			}
+		}
+	},
+	"inputs": []
+}
