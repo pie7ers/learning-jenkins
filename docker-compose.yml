@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 
 services:
   jenkins:
@@ -13,12 +13,17 @@ services:
     volumes:
       - jenkins_home:/var/jenkins_home
     #environment:
-      # variable use for JVM options and in this case the value disable the Jenkins initial configuration wizard
-      #- JAVA_OPTS=-Djenkins.install.runSetupWizard=false
+    # variable use for JVM options and in this case the value disable the Jenkins initial configuration wizard
+    #- JAVA_OPTS=-Djenkins.install.runSetupWizard=false
 
 volumes:
   jenkins_home:
 
-#Running
-#docker pull jenkins/jenkins:lts-jdk17
-#docker-compose up -d
+# Running
+#   docker pull jenkins/jenkins
+#   docker compose up -d
+#   docker compose -f docker-compose.yml up -d
+# enter to the container
+#   docker exec -it jenkins bash
+# check the password and copy
+#   cat /var/jenkins_home/secrets/initialAdminPassword

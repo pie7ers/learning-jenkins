@@ -22,50 +22,43 @@ Open source software and on-premise, its wrote on Java, used to automate and dep
 
 ## INSTALLATION WITH DOCKER
 
-- install docker
 
-    #docker pull jenkins #failed
+### OPTION 1: DOCKER COMPOSE
+
+- It'll use [docker-compose.yml](docker-compose.yml)
+
+    ```shell
+    # Running
+    #   docker pull jenkins/jenkins
+    #   docker compose up -d
+    #   docker compose -f docker-compose.yml up -d
+    # enter to the container
+    #   docker exec -it jenkins bash
+    # check the password and copy
+    #   cat /var/jenkins_home/secrets/initialAdminPassword
+    ```
+
+### OPTION 2: MANUAL
+
+    ```shell
+    # docker pull jenkins # failed
     docker pull jenkins/jenkins
-    #run container
+    # run container
     docker run -d --name jenkins -p 5002:8080 jenkins/jenkins
-    #runt container with volume
+    # runt container with volume
     docker run -d --name jenkins -p 5002:8080 -v /Users/peter/Desktop/Projects/learning-jenkins/volumes:/var/jenkins_home jenkins/jenkins
-    #enter to the container
+    # enter to the container
     docker exec -it jenkins bash
-    #check the password and copy
+    # check the password and copy
     cat /var/jenkins_home/secrets/initialAdminPassword
-    #go to localhost:jenkins-container-port and paste de password
-    #install default 
-    #add data
-    #username: admin
-    #password: admin
-    #full name: administrator
-    #email:
-    #access through http://localhost:5002/
-    #Also you can use a docker-compose
-    ```yml
-    version: '3'
-
-    services:
-    jenkins:
-        image: jenkins/jenkins:lts-jdk17
-        container_name: jenkins
-        restart: always
-        ports:
-        # jenkins default port
-        - "8080:8080"
-        # this port is used to connect Jenkins agents, specially used on master.slave mode to distribute the work charge
-        - "50000:50000"
-        volumes:
-        - jenkins_home:/var/jenkins_home
-
-    volumes:
-    jenkins_home:
-
-    #Running
-    #docker pull jenkins/jenkins:lts-jdk17
-    #docker-compose up -d
-    #docker run -it --name jenkins_jenkins_home --rm -v jenkins_jenkins_home:/ruta/dentro/contenedor alpine sh
+    # go to localhost:jenkins-container-port and paste de password
+    # install default 
+    # add data
+    # username: admin
+    # password: admin
+    # full name: administrator
+    # email:
+    # access through http://localhost:5002/
     ```
 
 ## ADMINISTRATION
@@ -124,7 +117,16 @@ used to automate tasks
         - Trigger builds remotely (e.g., from scripts): run the job through an HTTP call
         - Build after other projects are built: run the job after another job is executed
         - Build periodically: schedule the job to run at regular intervals using a cron
-        - GitHub hook trigger for GITScm polling 🟢: run the job when Git notifies Genkins about a change in the repository. Also is necessary that you configure webhooks in your repository, in PayloadURL "http://your-jenkins-url/github-webhook/" ![](JenkinsDocu/github-webhooks.png)
+        - GitHub hook trigger for GITScm polling 🟢: run the job when Git notifies Jenkins about a change in the repository. Also is necessary that you configure webhooks in your repository, in PayloadURL 
+            - to add the payload url you can have some options:
+                - using tools as [localtunnel](#expose-ports-for-local-tests), ngrok, etc
+                - cloudflare steps:
+                    - brew install cloudflare/cloudflare/cloudflared
+                    - cloudflared tunnel --url http://localhost:8080
+                    - copy the url provided by cloudflared and add /github-webhook/ at the end
+                        - e.g: https://surprised-recipes-threshold-smith.trycloudflare.com/github-webhook/
+                    - e.g: https://wicked-berries-jam.loca.lt/github-webhook/
+        "http://your-jenkins-url/github-webhook/" ![](JenkinsDocu/github-webhooks.png)
         - Poll SCM: Jenkins will check the SCM for changes at regular intervals and run the job if there are changes
     - Build Environment: configure the environment where the job will be executed ![](JenkinsDocu/config-job/3-build-trigger-and-build-environment.png)
         - Delete workspace before build starts: clear the workspace before starting the build 
@@ -157,7 +159,7 @@ used to automate tasks
 for node projects in case that you have many registries and the job generates errors check the package-log.json and verify if the registry that produces the error is mention and remove all its references if you don't need it
 
 ## EXPOSE PORTS FOR LOCAL TESTS
-- pnpm install -g localtunnel
+- pnpm add -g localtunnel
     - localtunnel exposes your localhost to the world for easy testing and sharing! No need to mess with DNS or deploy just to have others test out your changes.
     - lt --port 8080
 
