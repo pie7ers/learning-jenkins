@@ -1,20 +1,36 @@
-version: "3"
+version: "3.8"
 
 services:
   jenkins:
-    image: jenkins/jenkins
+    build: .
     container_name: jenkins
-    restart: always
+    restart: unless-stopped
+
     ports:
       # jenkins default port
       - "8080:8080"
       # this port is used to connect Jenkins agents, specially used on master.slave mode to distribute the work charge
       - "50000:50000"
-    volumes:
-      - jenkins_home:/var/jenkins_home
+
     #environment:
     # variable use for JVM options and in this case the value disable the Jenkins initial configuration wizard
     #- JAVA_OPTS=-Djenkins.install.runSetupWizard=false
+
+    volumes:
+      - jenkins_home:/var/jenkins_home
+
+    security_opt:
+      - no-new-privileges:true
+
+    cap_drop:
+      - NET_RAW
+
+    # opcional: limita recursos
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 1g
 
 volumes:
   jenkins_home:
@@ -27,3 +43,6 @@ volumes:
 #   docker exec -it jenkins bash
 # check the password and copy
 #   cat /var/jenkins_home/secrets/initialAdminPassword
+# when make changes on Dockerfile or docker-compose.yml you must rebuild the image
+# docker compose up -d --build --force-recreate
+
