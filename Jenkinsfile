@@ -1,17 +1,12 @@
 pipeline {
-  agent {
-    docker {
-      image 'node:20-alpine'
-      args '-u root:root' // evita problemas de permisos en algunos casos
-    }
+  agent any
+
+  tools {
+    nodejs 'node-20'
   }
 
   environment {
     CI = 'true'
-  }
-
-  options {
-    timestamps()
   }
 
   stages {
@@ -22,56 +17,35 @@ pipeline {
       }
     }
 
-    stage('Debug') {
+    stage('Check Node') {
       steps {
-        sh '''
-          echo "PATH=$PATH"
-          node -v
-          npm -v
-        '''
+        sh 'node -v'
+        sh 'npm -v'
       }
     }
 
-    stage('Install') {
+    stage('Install dependencies') {
       steps {
         sh 'npm ci'
       }
     }
 
-    /* stage('Lint') {
-      when {
-        expression { fileExists('package.json') }
-      }
-      steps {
-        sh 'npm run lint --if-present'
-      }
-    } */
-
-    stage('Test') {
+    stage('Run tests') {
       steps {
         sh 'npm test'
       }
     }
-
-    /* stage('Build') {
-      when {
-        expression { fileExists('package.json') }
-      }
-      steps {
-        sh 'npm run build --if-present'
-      }
-    } */
   }
 
   post {
+    always {
+      cleanWs()
+    }
     success {
       echo 'Build OK'
     }
     failure {
       echo 'Build FAILED'
-    }
-    always {
-      cleanWs()
     }
   }
 }

@@ -34,7 +34,7 @@ Open source software and on-premise, its wrote on Java, used to automate and dep
     #   docker compose -f docker-compose.yml up -d
     # enter to the container
     #   docker exec -it jenkins bash
-    # check the password and copy
+    # check to get the password and copy
     #   cat /var/jenkins_home/secrets/initialAdminPassword
     ```
 
