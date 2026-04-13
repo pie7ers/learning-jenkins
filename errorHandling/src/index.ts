@@ -1,15 +1,34 @@
-import express from 'express';
 import userRoutes from './routes/userRoutes'
-import { errorHandler } from './middleware/errorHandler';
+import Server from './server';
+import { envs } from './config/envs';
 
-const app = express();
-const port = 3000;
+(async () => {
+  await main()
+})()
 
-app.use(express.json());
-app.use('/api', userRoutes);
-app.use(errorHandler)
+async function main() {
+  const server = new Server({
+    port: envs.PORT,
+    routes: userRoutes
+  })
 
+  await server.start()
 
-app.listen(port, () => {
-    console.log(`Server is running at http://localhost:${port}`);
-})
+  let isShuttingDown = false;
+
+  const shutdown = async (signal: string) => {
+    if (isShuttingDown) return;
+    isShuttingDown = true;
+
+    console.log(`${signal} received, shutting down gracefully...`);
+
+    try {
+      await server.stop();
+    } catch (err) {
+      console.log(`Error during shutdown: ${err}`);
+    }
+  }
+
+  process.on('SIGINT', shutdown);
+  process.on('SIGTERM', shutdown);
+}

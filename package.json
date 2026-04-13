@@ -5,11 +5,13 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "n-errorHandling": "nodemon errorHandling/src/index.ts"
+    "dev": "tsnd --respawn --clear --watch .env errorHandling/src/index.ts"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "dotenv": "^17.4.2",
+    "env-var": "^7.5.0",
     "express": "^5.2.1",
     "joi": "^18.1.2"
   },
@@ -18,12 +20,12 @@
     "@types/joi": "^17.2.3",
     "@types/node": "^25.6.0",
     "jest": "^30.2.0",
-    "nodemon": "^3.1.4",
-    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^6.0.2"
   },
   "overrides": {
     "js-yaml": "^3.14.2",
     "qs": "^6.14.1"
-  }
+  },
+  "packageManager": "pnpm@10.33.0"
 }
