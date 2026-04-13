@@ -88,7 +88,7 @@ set permissions so that specific users admin Jenkins
 
 - Credentials
 
-    Set the passwords for differents tools such as gitlab, github, etc. The credentials are used on system configuration
+    Set the passwords for differents tools such as gitlab, github, etc. The credentials are used on system configuration, add a personal access token for github
 
 - Users
 
@@ -165,6 +165,5 @@ for node projects in case that you have many registries and the job generates er
 
 ## pnpm
 ```shell
-#npm ci
-pnpm install --frozen-lockfile
+npm ci
 ```
