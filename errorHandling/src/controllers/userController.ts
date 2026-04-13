@@ -19,32 +19,6 @@ export const getUser = (req: Request, res: Response): void => {
     }
 }
 
-
-/* export const login = tryCatch(async (req: Request, res: Response, next: NextFunction) => {
-    const { error, value } = loginSchema.validate(req.body, { abortEarly: false })
-    next(error)
-    return res.status(200).send({ message: 'ok' });
-}) */
-
-
-/* export const login = (req: Request, res: Response, next: NextFunction) => {
-    try {
-        //const { error, value } = loginSchema.validate(req.body, { abortEarly: false })
-        //if(error) throw new Error(JSON.stringify(error))
-        if (!req.body.user)
-            throw new Error('user required')
-    } catch (error) {
-        return next(error)
-    }
-    return res.status(200).send({ message: 'ok' });
-} */
-
-/* export const login = tryCatch(async (req: Request, res: Response) => {
-    if (!req.body.user)
-        throw new Error('user required')
-    return res.status(200).send({ message: 'ok' });
-}) */
-
 export const login = tryCatch(async (req: Request, res: Response) => {
     const { error, value } = loginSchema.validate(req.body, { abortEarly: false })
     if (error) throw error
