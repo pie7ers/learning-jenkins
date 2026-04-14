@@ -2,7 +2,7 @@ pipeline {
   agent any
 
   tools {
-    nodejs 'node-20'
+    nodejs 'node-20'//this corresponds to the instalation name in manage/configureTools/
   }
 
   environment {
