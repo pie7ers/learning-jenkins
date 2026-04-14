@@ -61,107 +61,82 @@ Open source software and on-premise, its wrote on Java, used to automate and dep
     # access through http://localhost:5002/
     ```
 
-## ADMINISTRATION
+## SETTING UP JENKINS
 
-set permissions so that specific users admin Jenkins
+- Go to jenkins enter the admin password getting from the container:
+    - enter to the container
+        - docker exec -it jenkins bash
+    - check the password and copy
+        - cat /var/jenkins_home/secrets/initialAdminPassword
 
-## Manage Jenkins
+- Go to plugins host/manage/pluginManager/available
+    - install plugins such as NodeJS
+    ![](JenkinsDocu/jenkins-jdk21/plugins.png)
 
-![](JenkinsDocu/manage_jenkings.png)
+- Go to plugins host/manage/configureTools/
+    - config node tool
+    ![](JenkinsDocu/jenkins-jdk21/node-tools-config.png)
 
-### Options
+> [!NOTE]
+> name corresponds to the reference used in the jenkinsfile
 
-- System configuration
+### Jenkins Credentials
 
-    - here you can add, modify, and delete global variables and paths generally
+- Set up credentials
+    - for the example the credential is a [personal access token](https://github.com/settings/personal-access-tokens)
+    ![](JenkinsDocu/jenkins-jdk21/new-credentials-front.png)
+    
 
-- Tools and Plugins
+## ADD JENKINSFILE
 
-    - tools/plugins installed on Jenkins, you can install more
-    - Jenkins can use the tools that you have installed on the server, it is recommended to use the tools from the Jenkins' plugins 
-    - to install plugins you must go to Manage Jenkins/plugins ![](JenkinsDocu/plugins.png)
-        - to install go to Avaliable plugins ![](JenkinsDocu/plugin_install_example.png)
+- add Jenkinsfile to the repository e.g: [Jenkinsfile](Jenkinsfile)
 
-- Nodes and Clouds
+## PIPELINES
 
-    When you have a lot process yoy might need computing power (vertical scaling) but sometimes this could be unprofitable the Nodes and cloud are used to scale horizontally using other servers which are configure in these options
+- Add a new item of Pipeline type
+![](JenkinsDocu/jenkins-jdk21/pipeline/0-jenkins-pipeline.png)
 
-- Credentials
+- In general secciton:
+    - Check Github project and set the url project
+![](JenkinsDocu/jenkins-jdk21/pipeline/1-jenkins-pipeline.png)
 
-    Set the passwords for differents tools such as gitlab, github, etc. The credentials are used on system configuration, add a personal access token for github
+- In build triggers:
+    - for this step you need to set up github webhook [SETTING UP GITHUB WEBWOOK](#setting-up-github-webwook)
+    - check GitHub hook trigger for GITScm polling 
+![](JenkinsDocu/jenkins-jdk21/pipeline/2-jenkins-pipeline.png)
 
-- Users
+- In pipeline section:
+    - Select `Pipeline script from SCM`
+    - SCM = GIT
+    - add your repository url
+    - in credentials select your credential or add a new one. Take a look in [Jenkins Credentials](#jenkins-credentials)
+![](JenkinsDocu/jenkins-jdk21/pipeline/3-jenkins-pipeline.png)
+- Save
 
-    Going to Manage Jenkins/Users you can admin users (create, modify, delete) but here only set the general information, but to modify the permissions you have to set these on Manage Jenkins/Security
+## SETTING UP GITHUB WEBWOOK
 
-- Security 
+https://github.com/GITHUB-USER/REPOSITORY/settings/hooks/HOOK-ID e.g: ![](JenkinsDocu/github-webhook.png)
 
-    In security module you can set the Authentication and Authorization options 
+- to add the payload url you can have some options:
+    - using tools as [localtunnel](#expose-ports-for-local-tests), ngrok, etc
+    - cloudflare steps:
+        - brew install cloudflare/cloudflare/cloudflared
+        - cloudflared tunnel --url http://localhost:8080
+        - copy the url provided by cloudflared and add /github-webhook/ at the end
+            - e.g: https://surprised-recipes-threshold-smith.trycloudflare.com/github-webhook/
+        - e.g: https://wicked-berries-jam.loca.lt/github-webhook/
+    "http://your-jenkins-url/github-webhook/" ![](JenkinsDocu/github-webhooks.png)
+    - Poll SCM: Jenkins will check the SCM for changes at regular intervals and run the job if there are changes
+    
 
-
-## JOBS
-
-used to automate tasks
-
-- Free style job ![](JenkinsDocu/freestyle-job.png)
-
-    once the job has been created since configuration you have many options among which are:
-
-    ### EXAMPLE FOR A GIT HUB NODEJS REPOSITY 
-
-    NOTE: the options may vary according to the installed plugins
-
-    - General: add general info of the job, also has a switch to turn on/off the job, another important option is `execute concurrent builds if necessary` ![](JenkinsDocu/config-job/1-general.png)
-    - Source Code Management (SMC): here you can config the repository in the example is the config for a github repository and on section `Branches to build` you can specify the branch if you want to that job run for all branches you should set "**" (without quotation marks). You can add many repositories for a single job ![](JenkinsDocu/config-job/2-source-code-managment-SMC.png)
-    - Build Trigger: In this section you determine when the job is executed:
-        - Trigger builds remotely (e.g., from scripts): run the job through an HTTP call
-        - Build after other projects are built: run the job after another job is executed
-        - Build periodically: schedule the job to run at regular intervals using a cron
-        - GitHub hook trigger for GITScm polling 🟢: run the job when Git notifies Jenkins about a change in the repository. Also is necessary that you configure webhooks in your repository, in PayloadURL 
-            - to add the payload url you can have some options:
-                - using tools as [localtunnel](#expose-ports-for-local-tests), ngrok, etc
-                - cloudflare steps:
-                    - brew install cloudflare/cloudflare/cloudflared
-                    - cloudflared tunnel --url http://localhost:8080
-                    - copy the url provided by cloudflared and add /github-webhook/ at the end
-                        - e.g: https://surprised-recipes-threshold-smith.trycloudflare.com/github-webhook/
-                    - e.g: https://wicked-berries-jam.loca.lt/github-webhook/
-        "http://your-jenkins-url/github-webhook/" ![](JenkinsDocu/github-webhooks.png)
-        - Poll SCM: Jenkins will check the SCM for changes at regular intervals and run the job if there are changes
-    - Build Environment: configure the environment where the job will be executed ![](JenkinsDocu/config-job/3-build-trigger-and-build-environment.png)
-        - Delete workspace before build starts: clear the workspace before starting the build 
-        - Use secret text(s) or file(s): use texts or secret files
-        - Provide Configuration files: add configuration files previously added "manage jenkins/managed files" configuration files option
-        - Add timestamps to the Console Output:
-        - Inspect build log for published build scans:
-        - Provide Node & npm bin/ folder to PATH 🟢: add the paths to Node.js and npm PATH for this is necessary have installed the NodeJS plugin and from "manage jenkins/tools" configure an specific version to be enable in the job otherwise job use a default version ![](JenkinsDocu/NodeJS-Instalations.png)
-        - Terminate a build if it's stuck: like its name says will finish the build if it's stuck
-        - With Ant: Prepares an environment for Jenkins to run builds using Apache Ant. Annotates Ant-specific output to display executed targets. Optionally sets up an Ant and/or JDK installation.
-    - Build Steps: determine the steps to execute during the build ![](JenkinsDocu/config-job/4-build-steps.png)
-        - Execute Shell: run shell commands on Unix environment.
-        - Execute Windows batch command: run Windows batch commads.
-        - Invoke Ant: run Apache Ant jobs.
-        - Invoke Gradle Script: run Gradle jobs.
-        - Run with timeout: run the build with a limit time.
-        - Invoke top-level Maven targets: run Maven jobs.
-        - Execute SonarQube Scanner: run SonarsQube Analysis.
-    - Post Build Actions: set actions to run after the build ![](JenkinsDocu/config-job/5-post-build-actions.png)
-        - Archive the artifacts: save the artifacts generated by the build (tests files, config files, reports, etc)
-        - Publish JUnit test result report: publis the JUnit result tests
-        - Email Notification: send emails
-        - Build other projects: run other jobs
-        - Record fingerprints of files to track usage: track files through finger prints
-        - Deploy artifacts to servers:
-
-
-## SOME TROUBLES SOLVED
-
-for node projects in case that you have many registries and the job generates errors check the package-log.json and verify if the registry that produces the error is mention and remove all its references if you don't need it
 
 ## EXPOSE PORTS FOR LOCAL TESTS
 - pnpm add -g localtunnel
     - localtunnel exposes your localhost to the world for easy testing and sharing! No need to mess with DNS or deploy just to have others test out your changes.
     - lt --port 8080
+
+> [!NOTE]
+> remember the url provided by localtunnel or anotehr tool, it must be running to expose your localhost and set in the github webhook.
 
 ## pnpm
 ```shell
